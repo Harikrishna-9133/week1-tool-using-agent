@@ -1,3 +1,4 @@
+import os
 import sys
 from app import get_sanitized_api_key, run_agent_loop, DEFAULT_MODEL
 from groq import Groq
@@ -9,8 +10,14 @@ if hasattr(sys.stdout, "reconfigure"):
 
 def main() -> None:
     api_key = get_sanitized_api_key()
+    if not api_key or api_key == "your_groq_api_key_here":
+        print("\n❌ Error: Valid GROQ_API_KEY is missing!")
+        print("Please set your API key in your '.env' file.\n")
+        sys.exit(1)
+
+    raw_env_model = os.getenv("GROQ_MODEL")
+    model = (raw_env_model if raw_env_model else DEFAULT_MODEL).strip().strip('"\'')
     client = Groq(api_key=api_key)
-    model = DEFAULT_MODEL
 
     test_prompts = [
         "What is 15 + 27?",

@@ -61,6 +61,9 @@ def calculate(operation: str, a: Union[int, float], b: Union[int, float]) -> Dic
     Returns:
         Dict[str, Any]: Structured dictionary containing 'result' or 'error'
     """
+    if not isinstance(operation, str):
+        return {"error": "Invalid or missing 'operation' string parameter."}
+
     try:
         num_a = float(a)
         num_b = float(b)
@@ -218,11 +221,15 @@ def run_agent_loop(client: Groq, model: str, user_prompt: str) -> None:
                         args = None
 
                     if args is not None:
-                        operation = args.get("operation")
-                        a = args.get("a")
-                        b = args.get("b")
-                        print(f"⚙️ Executing Python function: calculate(operation='{operation}', a={a}, b={b})")
-                        result = ALLOWED_TOOLS[func_name](operation=operation, a=a, b=b)
+                        if not isinstance(args, dict):
+                            result = {"error": "Tool arguments must be a JSON object."}
+                        else:
+                            operation = args.get("operation")
+                            a = args.get("a")
+                            b = args.get("b")
+                            print(f"⚙️ Executing Python function: calculate(operation='{operation}', a={a}, b={b})")
+                            func = ALLOWED_TOOLS[func_name]
+                            result = func(**args)  # type: ignore[arg-type]
 
                 print(f"📊 Tool Output Result: {json.dumps(result)}")
 
