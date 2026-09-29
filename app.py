@@ -280,20 +280,30 @@ def main() -> None:
     print("==================================================================\n")
 
     while True:
-        try:
-            user_input = input("User > ").strip()
-            if not user_input:
-                continue
+    try:
+        user_input = input("User > ").strip()
 
-            if user_input.lower() in ["exit", "quit"]:
-                print("\n👋 Goodbye!")
-                break
+        if len(user_input) > 2000:
+            print("\n❌ Input is too long. Please keep your prompt under 2000 characters.\n")
+            continue
 
-            run_agent_loop(client, model, user_input)
+        if not user_input:
+            continue
 
-        except (KeyboardInterrupt, EOFError):
-            print("\n\n👋 Program interrupted. Goodbye!")
+        if user_input.lower() in ["exit", "quit"]:
             break
+
+        # existing agent execution code
+        response = run_agent_loop(client, model, user_input)
+
+        print(response)
+
+    except KeyboardInterrupt:
+        print("\nExiting...")
+        break
+
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":
