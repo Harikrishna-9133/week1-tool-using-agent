@@ -280,10 +280,15 @@ def main() -> None:
     print("==================================================================\n")
 
     while True:
-        try:
-            user_input = input("User > ").strip()
-            if not user_input:
-                continue
+    try:
+        user_input = input("User > ").strip()
+
+        if len(user_input) > 2000:
+            print("\n❌ Input is too long. Please keep your prompt under 2000 characters.\n")
+            continue
+
+        if not user_input:
+            continue
 
             if user_input.lower() in ["exit", "quit"]:
                 print("\n👋 Goodbye!")
