@@ -1,5 +1,6 @@
 import sys
 import unittest
+from unittest.mock import patch, ANY
 
 # Ensure UTF-8 output encoding for Windows terminal / PowerShell compatibility
 if hasattr(sys.stdout, "reconfigure"):
@@ -58,6 +59,36 @@ class TestCalculatorTool(unittest.TestCase):
         self.assertIn("calculate", ALLOWED_TOOLS)
         self.assertEqual(len(ALLOWED_TOOLS), 1)
         self.assertEqual(ALLOWED_TOOLS["calculate"], calculate)
+     @patch("app.get_sanitized_api_key", return_value="test-key")
+    @patch("app.Groq")
+    @patch("app.run_agent_loop")
+    @patch("builtins.input", side_effect=["x" * 2001, "exit"])
+
+    def test_rejects_input_over_2000_characters(
+        self, mock_input, mock_run_agent, mock_groq, mock_key
+    ):
+        from app import main
+
+        main()
+
+        mock_run_agent.assert_not_called()
+
+    @patch("app.get_sanitized_api_key", return_value="test-key")
+    @patch("app.Groq")
+    @patch("app.run_agent_loop")
+    @patch("builtins.input", side_effect=["x" * 2000, "exit"])
+    def test_accepts_input_of_2000_characters(
+        self, mock_input, mock_run_agent, mock_groq, mock_key
+    ):
+        from app import main
+
+        main()
+
+        mock_run_agent.assert_called_once_with(
+            ANY,
+            ANY,
+            "x" * 2000
+        )
 
 
 if __name__ == "__main__":

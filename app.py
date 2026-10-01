@@ -282,6 +282,11 @@ def main() -> None:
     while True:
         try:
             user_input = input("User > ").strip()
+
+            if len(user_input) > 2000:
+                print("\n❌ Input is too long. Please keep your prompt under 2000 characters.\n")
+                continue
+
             if not user_input:
                 continue
 
