@@ -63,6 +63,7 @@ class TestCalculatorTool(unittest.TestCase):
     @patch("app.Groq")
     @patch("app.run_agent_loop")
     @patch("builtins.input", side_effect=["x" * 2001, "exit"])
+
     def test_rejects_input_over_2000_characters(
         self, mock_input, mock_run_agent, mock_groq, mock_key
     ):
