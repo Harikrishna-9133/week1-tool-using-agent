@@ -44,6 +44,11 @@ class TestCalculatorTool(unittest.TestCase):
         res = calculate("add", "invalid_num", 10)
         self.assertIn("error", res)
 
+    def test_boolean_arguments(self):
+        res = calculate("add", True, 10)
+        self.assertIn("error", res)
+        self.assertEqual(res["error"], "Invalid numerical arguments: Booleans are not allowed.")
+
     def test_tool_schema_structure(self):
         self.assertEqual(len(TOOLS), 1)
         tool = TOOLS[0]
