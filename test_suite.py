@@ -64,7 +64,8 @@ class TestCalculatorTool(unittest.TestCase):
         self.assertIn("calculate", ALLOWED_TOOLS)
         self.assertEqual(len(ALLOWED_TOOLS), 1)
         self.assertEqual(ALLOWED_TOOLS["calculate"], calculate)
-     @patch("app.get_sanitized_api_key", return_value="test-key")
+
+    @patch("app.get_sanitized_api_key", return_value="test-key")
     @patch("app.Groq")
     @patch("app.run_agent_loop")
     @patch("builtins.input", side_effect=["x" * 2001, "exit"])
